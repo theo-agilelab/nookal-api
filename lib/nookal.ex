@@ -1,0 +1,2 @@
+defmodule Nookal do
+end
