@@ -6,7 +6,7 @@ defmodule Nookal.Application do
   def start(_, _) do
     api_endpoint_uri =
       :nookal
-      |> Application.fetch_env!(:api_endpoint)
+      |> Application.get_env(:api_endpoint, "https://api.nookal.com")
       |> URI.parse()
 
     children = [

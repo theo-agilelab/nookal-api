@@ -1,7 +1,11 @@
 defmodule Nookal.Client do
+  @moduledoc false
+
   require Logger
 
   alias Nookal.Connection
+
+  @behaviour Nookal.Dispatcher
 
   @api_key Application.fetch_env!(:nookal, :api_key)
   @path_prefix "/production/v2"
@@ -21,6 +25,7 @@ defmodule Nookal.Client do
     }
   end
 
+  @impl true
   def dispatch(req_path, req_params \\ %{}) do
     req_body =
       req_params

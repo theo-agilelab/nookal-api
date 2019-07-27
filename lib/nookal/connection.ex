@@ -122,7 +122,8 @@ defmodule Nookal.Connection do
 
   defp process_response({:done, request_ref}, state) do
     {%{response: response, from: from}, state} = pop_in(state.requests[request_ref])
-    %{status: status, headers: headers, body: body} = response
+    %{status: status, headers: headers} = response
+    body = Map.get(response, :body, [])
 
     reply = {:ok, status, headers, body}
     GenServer.reply(from, reply)
