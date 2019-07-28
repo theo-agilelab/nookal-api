@@ -1,0 +1,28 @@
+{
+  "data":{
+    "api_call":"getPractitioners",
+    "results":{
+      "practitioners":[
+        {
+          "Email":"john.doe@example.com",
+          "FirstName":"John",
+          "ID":"1",
+          "LastName":"Doe",
+          "Speciality":"Doctor",
+          "Title":"Dr",
+          "locations":[1]
+        }
+      ]
+    }
+  },
+  "details":{
+    "currentItems":1,
+    "totalItems":1
+  },
+  "settings":{
+    "currentPage":1,
+    "nextPage":null,
+    "pageLength":1
+  },
+  "status":"success"
+}

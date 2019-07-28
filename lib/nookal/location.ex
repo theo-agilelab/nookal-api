@@ -15,6 +15,24 @@ defmodule Nookal.Location do
     {:timezone, "Timezone"}
   ]
 
+  def new(payload) when is_list(payload) do
+    locations =
+      Enum.reduce_while(payload, [], fn raw_location, acc ->
+        case Nookal.Location.new(raw_location) do
+          {:ok, location} ->
+            {:cont, [location | acc]}
+
+          :error ->
+            {:halt, nil}
+        end
+      end)
+
+    case locations do
+      nil -> {:error, {:malformed_payload, "could not map locations from payload"}}
+      locations -> {:ok, locations}
+    end
+  end
+
   def new(payload) do
     case extract_fields(@mapping, payload, %__MODULE__{}) do
       {:ok, location} ->

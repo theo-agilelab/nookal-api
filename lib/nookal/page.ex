@@ -15,7 +15,13 @@ defmodule Nookal.Page do
      }}
   end
 
-  def new(_payload), do: :error
+  def new(_payload) do
+    {:error, {:malformed_payload, "could not build page from payload"}}
+  end
+
+  def put_items(%__MODULE__{} = page, items) when is_list(items) do
+    %{page | items: items}
+  end
 
   defp maybe_parse_integer(value) when is_binary(value) do
     case Integer.parse(value) do

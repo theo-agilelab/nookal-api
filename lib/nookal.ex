@@ -17,39 +17,34 @@ defmodule Nookal do
 
   def get_locations() do
     with {:ok, payload} <- @client.dispatch("/getLocations"),
-         {:ok, results} <- fetch_results(payload),
-         {:ok, page} <- Nookal.Page.new(payload) do
-      case Map.fetch(results, "locations") do
-        {:ok, raw_locations} ->
-          locations =
-            Enum.reduce_while(raw_locations, [], fn raw_location, acc ->
-              case Nookal.Location.new(raw_location) do
-                {:ok, location} ->
-                  {:cont, [location | acc]}
-
-                :error ->
-                  {:halt, nil}
-              end
-            end)
-
-          case locations do
-            nil -> {:error, {:malformed_payload, "could not map locations from payload"}}
-            locations -> {:ok, %{page | items: locations}}
-          end
-
-        :error ->
-          {:error, {:malformed_payload, "could not fetch locations from payload"}}
-      end
+         {:ok, raw_locations} <- fetch_results(payload, "locations"),
+         {:ok, page} <- Nookal.Page.new(payload),
+         {:ok, locations} <- Nookal.Location.new(raw_locations) do
+      {:ok, Nookal.Page.put_items(page, locations)}
     end
   end
 
-  defp fetch_results(payload) do
+  @doc """
+  Get practitioners.
+  """
+  @spec get_practitioners() :: {:ok, Nookal.Page.t(Nookal.Practitioner.t())} | {:error, term()}
+
+  def get_practitioners() do
+    with {:ok, payload} <- @client.dispatch("/getPractitioners"),
+         {:ok, raw_practitioners} <- fetch_results(payload, "practitioners"),
+         {:ok, page} <- Nookal.Page.new(payload),
+         {:ok, practitioners} <- Nookal.Practitioner.new(raw_practitioners) do
+      {:ok, Nookal.Page.put_items(page, practitioners)}
+    end
+  end
+
+  defp fetch_results(payload, key) do
     case payload do
-      %{"data" => %{"results" => results}} ->
-        {:ok, results}
+      %{"data" => %{"results" => %{^key => data}}} ->
+        {:ok, data}
 
       _other ->
-        {:error, {:malformed_payload, "could not fetch results from payload"}}
+        {:error, {:malformed_payload, "could not fetch #{inspect(key)} from payload"}}
     end
   end
 end

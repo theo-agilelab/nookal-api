@@ -27,7 +27,7 @@ defmodule NookalTest do
     end
   end
 
-  describe "get_locations/1" do
+  describe "get_locations/0" do
     test "retrieves locations" do
       resp_payload = read_api_fixture("get_locations")
 
@@ -67,13 +67,13 @@ defmodule NookalTest do
       expect_dispatch(fn _ -> {:ok, resp_payload} end)
 
       assert Nookal.get_locations() ==
-               {:error, {:malformed_payload, "could not fetch results from payload"}}
+               {:error, {:malformed_payload, "could not fetch \"locations\" from payload"}}
 
       {_, resp_payload} = pop_in(complete_payload, ["data", "results", "locations"])
       expect_dispatch(fn _ -> {:ok, resp_payload} end)
 
       assert Nookal.get_locations() ==
-               {:error, {:malformed_payload, "could not fetch locations from payload"}}
+               {:error, {:malformed_payload, "could not fetch \"locations\" from payload"}}
 
       resp_payload =
         update_in(complete_payload, ["data", "results", "locations", Access.at(0)], fn item ->
@@ -92,6 +92,35 @@ defmodule NookalTest do
 
       assert {:ok, %Nookal.Page{items: [location]}} = Nookal.get_locations()
       assert location.address == nil
+    end
+  end
+
+  describe "get_practitioners/0" do
+    test "retrieves practitioner from remote server" do
+      resp_payload = read_api_fixture("get_practitioners")
+
+      expect_dispatch(fn req_path ->
+        assert req_path == "/getPractitioners"
+
+        {:ok, resp_payload}
+      end)
+
+      assert {:ok, page} = Nookal.get_practitioners()
+
+      assert page.items == [
+               %Nookal.Practitioner{
+                 email: "john.doe@example.com",
+                 first_name: "John",
+                 id: "1",
+                 last_name: "Doe",
+                 location_ids: [1],
+                 speciality: "Doctor",
+                 title: "Dr"
+               }
+             ]
+
+      assert page.current == 1
+      assert page.next == nil
     end
   end
 
