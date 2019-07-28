@@ -1,0 +1,35 @@
+{
+  "data":{
+    "api_call":"getLocations",
+    "results":{
+      "locations":[
+        {
+          "AddressLine1":"42 Foo Street",
+          "AddressLine2":"Azusa New York",
+          "AddressLine3":null,
+          "City":"New York",
+          "Country":"USA",
+          "Email":"john@example.com",
+          "ID":"1",
+          "Name":"Foo",
+          "Postcode":"123456",
+          "State":null,
+          "Telephone":"62749939",
+          "Timezone":"UTC",
+          "Website":null,
+          "lockNewPatientsToLocation":"0"
+        }
+      ]
+    }
+  },
+  "details":{
+    "currentItems":1,
+    "totalItems":1
+  },
+  "settings":{
+    "currentPage":"1",
+    "nextPage":null,
+    "pageLength":3
+  },
+  "status":"success"
+}
