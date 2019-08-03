@@ -53,7 +53,7 @@ defmodule Nookal.Connection do
     {:ok, _conn} = Mint.HTTP.close(state.conn)
 
     state = %{state | conn: nil, requests: %{}}
-    {:backoff, 1_000, state}
+    {:connect, :reconnect, state}
   end
 
   def handle_call({:request, method, path, headers, body}, from, state) do
@@ -65,7 +65,7 @@ defmodule Nookal.Connection do
         {:noreply, state}
 
       {:error, _conn, reason} ->
-        {:disconnect, 1_000, {:error, reason}, state}
+        {:disconnect, :request_failure, {:error, reason}, state}
     end
   end
 
