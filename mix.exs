@@ -7,7 +7,7 @@ defmodule Nookal.MixProject do
     [
       app: :nookal,
       version: @version,
-      elixir: "~> 1.8",
+      elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       docs: docs(),
