@@ -63,6 +63,7 @@ defmodule Nookal.Client do
     end
   end
 
+  @impl true
   def upload(file_uploading_url, file_content) do
     case Nookal.Uploader.upload(file_uploading_url, file_content) do
       {:ok, 200, _resp_headers, _resp_body} ->

@@ -1,0 +1,18 @@
+{
+  "data":{
+    "api_call":"setFileAsActive",
+    "results":{
+      "file_id": "file_123"
+    }
+  },
+  "details":{
+    "currentItems":1,
+    "totalItems":1
+  },
+  "settings":{
+    "currentPage":"1",
+    "nextPage":null,
+    "pageLength":1
+  },
+  "status":"success"
+}

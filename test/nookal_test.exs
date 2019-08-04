@@ -124,6 +124,96 @@ defmodule NookalTest do
     end
   end
 
+  describe "upload/2" do
+    test "uploads file to remote server" do
+      file_content = "foo.bar"
+
+      params = %{
+        "patient_id" => 1,
+        "case_id" => 1,
+        "name" => "Test Sample #1",
+        "extension" => "png",
+        "file_type" => "image/png",
+        "file_path" => "/path/to/file"
+      }
+
+      expect_dispatch(fn req_path, req_params ->
+        assert req_path == "/uploadFile"
+        assert req_params == params
+
+        {:ok, read_api_fixture("upload_file")}
+      end)
+
+      expect(ClientMock, :upload, fn url, content ->
+        assert url == "http://cloud.example.com/path/to/file?foo=bar"
+        assert content == file_content
+
+        :ok
+      end)
+
+      expect_dispatch(fn req_path, req_params ->
+        assert req_path == "/setFileActive"
+        assert req_params == %{"file_id" => "file_123", "patient_id" => 1}
+
+        {:ok, read_api_fixture("activate_file")}
+      end)
+
+      assert {:ok, file_id} = Nookal.upload(file_content, params)
+      assert file_id == "file_123"
+    end
+
+    test "handles cloud uploading failure" do
+      file_content = "foo.bar"
+
+      params = %{
+        "patient_id" => 1,
+        "case_id" => 1,
+        "name" => "Test Sample #1",
+        "extension" => "png",
+        "file_type" => "image/png",
+        "file_path" => "/path/to/file"
+      }
+
+      expect_dispatch(fn req_path, req_params ->
+        assert req_path == "/uploadFile"
+        assert req_params == params
+
+        {:ok, read_api_fixture("upload_file")}
+      end)
+
+      expect(ClientMock, :upload, fn url, content ->
+        assert url == "http://cloud.example.com/path/to/file?foo=bar"
+        assert content == file_content
+
+        {:error, {:upload_failure, :random_failure}}
+      end)
+
+      assert Nookal.upload(file_content, params) == {:error, {:upload_failure, :random_failure}}
+    end
+
+    test "handles activation failure" do
+      file_content = "foo.bar"
+
+      params = %{"patient_id" => 1}
+
+      expect_dispatch(fn req_path, _req_params ->
+        assert req_path == "/uploadFile"
+
+        {:ok, read_api_fixture("upload_file")}
+      end)
+
+      expect(ClientMock, :upload, fn _, _ -> :ok end)
+
+      expect_dispatch(fn req_path, _req_params ->
+        assert req_path == "/setFileActive"
+
+        {:error, {:request_failure, :random_failure}}
+      end)
+
+      assert Nookal.upload(file_content, params) == {:error, {:request_failure, :random_failure}}
+    end
+  end
+
   defp expect_dispatch(fun) do
     expect(ClientMock, :dispatch, fun)
   end

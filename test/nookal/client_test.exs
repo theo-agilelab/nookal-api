@@ -48,6 +48,17 @@ defmodule Nookal.ClientTest do
     end
   end
 
+  describe "upload/2" do
+    test "uploads file to remote server" do
+      start_supervised!({Nookal.Uploader, []}, id: Nookal.Uploader)
+
+      file_content = <<1, 2, 3>>
+      assert Nookal.Client.upload("http://localhost:4004/test_upload?foo=bar", file_content)
+
+      assert_received {:upload, ^file_content}
+    end
+  end
+
   defp get_header(headers, name) do
     List.first(for {^name, value} <- headers, do: value)
   end

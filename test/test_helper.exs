@@ -53,6 +53,13 @@ defmodule NookalAPI do
     end
   end
 
+  def call(%Conn{method: "PUT"} = conn, test_pid) do
+    {:ok, req_body, conn} = read_body(conn)
+    send(test_pid, {:upload, req_body})
+
+    send_resp(conn, 200, "")
+  end
+
   def call(conn, _test) do
     send_resp(conn, 404, "Not Found")
   end

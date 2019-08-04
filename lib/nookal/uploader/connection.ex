@@ -33,7 +33,7 @@ defmodule Nookal.Uploader.Connection do
       {:noreply, state}
     else
       {:error, _conn, reason} ->
-        {:reply, {:error, reason}, state}
+        {:reply, {:error, {:upload_failure, reason}}, state}
     end
   end
 
