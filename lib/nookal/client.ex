@@ -30,6 +30,18 @@ defmodule Nookal.Client do
   end
 
   @impl true
+
+  @doc """
+  Dispatches request to Nookal remote server.
+
+  ### Example
+
+      iex> Nookal.Client.dispatch("/foo?bar=qwe", %{"name" => "john"})
+      {:ok, %{"foo" => "bar"}}
+  """
+
+  @spec dispatch(String.t(), map()) :: {:ok, term()} | {:error, term()}
+
   def dispatch(req_path, req_params \\ %{}) do
     req_body =
       req_params

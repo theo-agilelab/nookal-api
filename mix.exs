@@ -10,6 +10,7 @@ defmodule Nookal.MixProject do
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      docs: docs(),
       xref: [
         exclude: [
           Nookal.ClientMock
@@ -35,6 +36,35 @@ defmodule Nookal.MixProject do
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
       {:mox, "~> 0.5.0", only: :test},
       {:plug_cowboy, "~> 2.1", only: :test}
+    ]
+  end
+
+  defp docs() do
+    [
+      main: "Nookal",
+      source_ref: "v#{@version}",
+      canonical: "http://hexdocs.pm/nookal",
+      source_url: "https://github.com/agilelabsg/nookal",
+      groups_for_modules: [
+        API: [
+          Nookal
+        ],
+        Structs: [
+          Nookal.Address,
+          Nookal.Appointment,
+          Nookal.Availability,
+          Nookal.Case,
+          Nookal.Class,
+          Nookal.Contact,
+          Nookal.Invoice,
+          Nookal.Location,
+          Nookal.Page,
+          Nookal.Patient,
+          Nookal.Practitioner,
+          Nookal.Service,
+          Nookal.TreatmentNote
+        ]
+      ]
     ]
   end
 end
