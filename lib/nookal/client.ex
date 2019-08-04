@@ -3,7 +3,10 @@ defmodule Nookal.Client do
 
   require Logger
 
-  alias Nookal.Connection
+  alias Nookal.{
+    Connection,
+    Uploader
+  }
 
   @behaviour Nookal.Dispatcher
 
@@ -12,10 +15,11 @@ defmodule Nookal.Client do
 
   def start_link(endpoint_uri) do
     children = [
-      Supervisor.child_spec({Connection, endpoint_uri}, %{id: Connection})
+      Supervisor.child_spec({Connection, endpoint_uri}, %{id: Connection}),
+      Supervisor.child_spec({Uploader, []}, %{id: Uploader})
     ]
 
-    Supervisor.start_link(children, strategy: :one_for_one)
+    Supervisor.start_link(children, strategy: :one_for_one, name: __MODULE__)
   end
 
   def child_spec(endpoint_uri) do
@@ -56,6 +60,26 @@ defmodule Nookal.Client do
         Logger.error("Could not reach remote API, reason: " <> inspect(reason))
 
         {:error, :request_failure}
+    end
+  end
+
+  def upload(file_uploading_url, file_content) do
+    case Nookal.Uploader.upload(file_uploading_url, file_content) do
+      {:ok, 200, _resp_headers, _resp_body} ->
+        :ok
+
+      {:ok, status, _resp_headers, resp_body} ->
+        resp_body = IO.iodata_to_binary(resp_body)
+
+        Logger.error(
+          "Receive unexpected status from Amazon Web Service, status: " <>
+            inspect(status) <> ", body: " <> resp_body
+        )
+
+        {:error, {:upload_failure, :unexpected_status}}
+
+      {:error, _reason} = error ->
+        error
     end
   end
 

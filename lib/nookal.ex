@@ -38,6 +38,39 @@ defmodule Nookal do
     end
   end
 
+  @doc """
+  Upload file for a patient.
+
+  ### Examples
+
+      file_content = File.read!("/path/to/file")
+      params = %{
+        "patient_id" => 1,
+        "case_id" => 1,
+        "name" => "Foot Scan MRI",
+        "extension" => "png",
+        "file_type" => "image/png",
+        "file_path" => "/path/to/file"
+      }
+
+      Nookal.upload(file_content, params)
+  """
+
+  @spec upload(binary(), map()) :: {:ok, String.t()} | {:error, term()}
+
+  def upload(file_content, params) do
+    patient_id = Map.fetch!(params, "patient_id")
+
+    with {:ok, payload} <- @client.dispatch("/uploadFile", params),
+         {:ok, file_id} <- fetch_results(payload, "file_id"),
+         {:ok, file_uploading_url} <- fetch_results(payload, "url"),
+         :ok <- @client.upload(file_uploading_url, file_content),
+         activate_params = %{"file_id" => file_id, "patient_id" => patient_id},
+         {:ok, _payload} <- @client.dispatch("/setFileActive", activate_params) do
+      {:ok, file_id}
+    end
+  end
+
   defp fetch_results(payload, key) do
     case payload do
       %{"data" => %{"results" => %{^key => data}}} ->
