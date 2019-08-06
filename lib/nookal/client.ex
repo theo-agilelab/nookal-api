@@ -10,7 +10,6 @@ defmodule Nookal.Client do
 
   @behaviour Nookal.Dispatcher
 
-  @api_key Application.fetch_env!(:nookal, :api_key)
   @path_prefix "/production/v2"
 
   def start_link(endpoint_uri) do
@@ -43,9 +42,13 @@ defmodule Nookal.Client do
   @spec dispatch(String.t(), map()) :: {:ok, term()} | {:error, term()}
 
   def dispatch(req_path, req_params \\ %{}) do
+    # FIXME: Make this more efficient by not fetching API key from config
+    # every time request is made.
+    api_key = Application.fetch_env!(:nookal, :api_key)
+
     req_body =
       req_params
-      |> Map.put_new("api_key", @api_key)
+      |> Map.put_new("api_key", api_key)
       |> URI.encode_query()
 
     req_headers = [
