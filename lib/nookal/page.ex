@@ -23,13 +23,10 @@ defmodule Nookal.Page do
     %{page | items: items}
   end
 
-  defp maybe_parse_integer(value) when is_binary(value) do
-    case Integer.parse(value) do
-      {integer, ""} -> integer
-      {_integer, _rest} -> nil
-      :error -> nil
+  defp maybe_parse_integer(value) do
+    case Nookal.Utils.cast(value, :integer) do
+      {:ok, integer} -> integer
+      {:error, _reason} -> nil
     end
   end
-
-  defp maybe_parse_integer(value), do: value
 end
