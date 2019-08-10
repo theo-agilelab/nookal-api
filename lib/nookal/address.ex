@@ -14,13 +14,13 @@ defmodule Nookal.Address do
   defstruct [:line1, :line2, :line3, :city, :state, :country, :postcode]
 
   @mapping [
-    {:line1, "AddressLine1"},
-    {:line2, "AddressLine2"},
-    {:line3, "AddressLine3"},
-    {:city, "City"},
-    {:state, "State"},
-    {:country, "Country"},
-    {:postcode, "Postcode"}
+    {:line1, "AddressLine1", :string},
+    {:line2, "AddressLine2", :string},
+    {:line3, "AddressLine3", :string},
+    {:city, "City", :string},
+    {:state, "State", :string},
+    {:country, "Country", :string},
+    {:postcode, "Postcode", :string}
   ]
 
   def new(payload) do

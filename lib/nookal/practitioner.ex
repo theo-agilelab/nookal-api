@@ -2,43 +2,30 @@ defmodule Nookal.Practitioner do
   import Nookal.Utils
 
   @type t() :: %__MODULE__{
-          id: String.t(),
+          id: integer(),
           first_name: String.t(),
           last_name: String.t(),
           speciality: String.t(),
           title: String.t(),
           email: String.t(),
-          location_ids: list(String.t())
+          location_ids: list(integer())
         }
 
   defstruct [:id, :first_name, :last_name, :speciality, :title, :email, :location_ids]
 
   @mapping [
-    {:id, "ID"},
-    {:first_name, "FirstName"},
-    {:last_name, "LastName"},
-    {:email, "Email"},
-    {:speciality, "Speciality"},
-    {:title, "Title"},
-    {:location_ids, "locations"}
+    {:id, "ID", :integer},
+    {:first_name, "FirstName", :string},
+    {:last_name, "LastName", :string},
+    {:email, "Email", :string},
+    {:speciality, "Speciality", :string},
+    {:title, "Title", :string},
+    {:location_ids, "locations", {:list, :integer}}
   ]
 
   def new(payload) when is_list(payload) do
-    result =
-      Enum.reduce_while(payload, [], fn raw_practitioner, acc ->
-        case new(raw_practitioner) do
-          {:ok, practitioner} ->
-            {:cont, [practitioner | acc]}
-
-          :error ->
-            {:halt, nil}
-        end
-      end)
-
-    if result do
-      {:ok, result}
-    else
-      {:error, {:malformed_payload, "could not map practitioners from payload"}}
+    with {:error, reason} <- all_or_none_map(payload, &new/1) do
+      {:error, {:malformed_payload, "could not map practitioners from payload" <> reason}}
     end
   end
 

@@ -50,7 +50,7 @@ defmodule NookalTest do
                    postcode: "123456",
                    state: nil
                  },
-                 id: "1",
+                 id: 1,
                  name: "Foo",
                  timezone: "UTC"
                }
@@ -83,7 +83,9 @@ defmodule NookalTest do
       expect_dispatch(fn _ -> {:ok, resp_payload} end)
 
       assert Nookal.get_locations() ==
-               {:error, {:malformed_payload, "could not map locations from payload"}}
+               {:error,
+                {:malformed_payload,
+                 "could not map locations from payload, reason: could not fetch \"ID\" in payload"}}
 
       {_, resp_payload} =
         pop_in(complete_payload, ["data", "results", "locations", Access.at(0), "AddressLine1"])
@@ -109,9 +111,9 @@ defmodule NookalTest do
 
       assert page.items == [
                %Nookal.Practitioner{
+                 id: 1,
                  email: "john.doe@example.com",
                  first_name: "John",
-                 id: "1",
                  last_name: "Doe",
                  location_ids: [1],
                  speciality: "Doctor",
