@@ -216,6 +216,73 @@ defmodule NookalTest do
     end
   end
 
+  describe "stream_pages/2" do
+    test "streams pages until no more next page" do
+      test_pid = self()
+
+      request_fun = fn current_page ->
+        send(test_pid, {:request, current_page})
+
+        if current_page < 3 do
+          {:ok, %Nookal.Page{current: current_page, next: current_page + 1}}
+        else
+          {:ok, %Nookal.Page{current: current_page, next: nil}}
+        end
+      end
+
+      assert [page1, page2, page3] = request_fun |> Nookal.stream_pages() |> Enum.to_list()
+      assert page1.current == 1
+      assert page2.current == 2
+      assert page3.current == 3
+
+      assert_received {:request, 1}
+      assert_received {:request, 2}
+      assert_received {:request, 3}
+      refute_received {:request, _page}
+    end
+
+    test "streams pages from the starting page" do
+      test_pid = self()
+
+      request_fun = fn current_page ->
+        send(test_pid, {:request, current_page})
+
+        if current_page < 3 do
+          {:ok, %Nookal.Page{current: current_page, next: current_page + 1}}
+        else
+          {:ok, %Nookal.Page{current: current_page, next: nil}}
+        end
+      end
+
+      assert [page3] = request_fun |> Nookal.stream_pages(3) |> Enum.to_list()
+      assert page3.current == 3
+
+      assert_received {:request, 3}
+      refute_received {:request, _page}
+    end
+
+    test "streams pages until any page returns with error" do
+      test_pid = self()
+
+      request_fun = fn current_page ->
+        send(test_pid, {:request, current_page})
+
+        if current_page < 3 do
+          {:ok, %Nookal.Page{current: current_page, next: current_page + 1}}
+        else
+          {:error, :random_reason}
+        end
+      end
+
+      assert request_fun |> Nookal.stream_pages() |> Enum.to_list()
+
+      assert_received {:request, 1}
+      assert_received {:request, 2}
+      assert_received {:request, 3}
+      refute_received {:request, _page}
+    end
+  end
+
   defp expect_dispatch(fun) do
     expect(ClientMock, :dispatch, fun)
   end

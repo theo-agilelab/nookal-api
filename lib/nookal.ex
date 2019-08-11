@@ -180,6 +180,55 @@ defmodule Nookal do
   end
 
   @doc """
+  Stream pages with the request function.
+
+  ## Examples
+
+      iex> request_fun = fn current_page ->
+      ...>   Nookal.get_patients(%{
+      ...>     "page" => current_page,
+      ...>     "page_length" => 15
+      ...>   })
+      ...> end
+      ...>
+      ...> request_fun
+      ...> |> Nookal.stream_pages()
+      ...> |> Stream.flat_map(fn page -> page.items end)
+      ...> |> Enum.to_list()
+      [
+        %Nookal.Patient{
+          id: 1,
+          first_name: "Patrick",
+          last_name: "Propst",
+          ...
+        },
+        %Nookal.Patient{
+          id: 2,
+          first_name: "Johan",
+          last_name: "Kesling",
+          ...
+        }
+      ]
+  """
+
+  @spec stream_pages((integer() -> {:ok, Nookal.Page.t(any())} | {:error, term()}), integer()) ::
+          Enumerable.t()
+
+  def stream_pages(request_fun, starting_page \\ 1) do
+    Stream.unfold(starting_page, fn current_page ->
+      if current_page do
+        case request_fun.(current_page) do
+          {:ok, %Nookal.Page{} = page} ->
+            {page, page.next}
+
+          {:error, _reason} ->
+            nil
+        end
+      end
+    end)
+  end
+
+  @doc """
   Upload file for a patient.
 
   ### Examples
