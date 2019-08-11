@@ -112,6 +112,74 @@ defmodule Nookal do
   end
 
   @doc """
+  Get patients in a page.
+
+  Please check [API specs](https://api.nookal.com/dev/reference/patient) for more information.
+
+  ## Examples
+
+      iex> Nookal.get_patients(%{"page_length" => 1})
+      {:ok,
+       %Nookal.Page{
+         current: 1,
+         items: [
+           %Nookal.Patient{
+             address: %Nookal.Address{
+               city: "Berlin Wedding",
+               country: "Germany",
+               line1: "Genslerstraße 84",
+               line2: "",
+               line3: "",
+               postcode: "13339",
+               state: "Berlin"
+             },
+             alerts: "",
+             category: "",
+             date_created: nil,
+             date_modified: nil,
+             dob: ~D[1989-01-01],
+             email: "patrick@example.com",
+             employer: "Berlin Solutions",
+             first_name: "Patrick",
+             gender: "F",
+             id: 1,
+             last_name: "Propst",
+             location_id: 1,
+             middle_name: "Kahn",
+             mobile: "98989899",
+             nickname: "",
+             notes: "",
+             occupation: "",
+             online_code: "ABC123",
+             postal_address: %Nookal.Address{
+               city: "Berlin Wedding",
+               country: "Germany",
+               line1: "Genslerstraße 84",
+               line2: "",
+               line3: "",
+               postcode: "13339",
+               state: "Berlin"
+             },
+             title: "Mr"
+           }
+         ],
+         next: 2
+       }}
+
+  """
+
+  @spec get_patients(map()) :: {:ok, Nookal.Page.t(Nookal.Patient.t())} | {:error, term()}
+
+  def get_patients(params \\ %{}) do
+    with {:ok, payload} <- @client.dispatch("/getPatients", params),
+         {:ok, raw_patients} <- fetch_results(payload, "patients"),
+         {:ok, page} <- Nookal.Page.new(payload),
+         {:ok, patients} <- Nookal.Patient.new(raw_patients) do
+      {:ok, Nookal.Page.put_items(page, patients)}
+    end
+  end
+
+  @doc """
   Upload file for a patient.
 
   ### Examples
