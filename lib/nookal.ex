@@ -226,6 +226,14 @@ defmodule Nookal do
     end
   end
 
+  @spec get_file(map()) :: {:ok, Nookal.Page.t(Nookal.FileUrl.t())} | {:error, term()}
+
+  def get_file(params \\ %{}) do
+    with {:ok, payload} <- @client.dispatch("/getFileUrl", params) do
+      IO.inspect(payload)
+    end
+  end
+
   @doc """
   Stream pages with the request function.
 
