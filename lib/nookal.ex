@@ -226,11 +226,25 @@ defmodule Nookal do
     end
   end
 
-  @spec get_file(map()) :: {:ok, Nookal.Page.t(Nookal.FileUrl.t())} | {:error, term()}
+  @doc """
+    Get patients in a page.
 
-  def get_file(params \\ %{}) do
-    with {:ok, payload} <- @client.dispatch("/getFileUrl", params) do
-      IO.inspect(payload)
+    Please check [API specs](https://api.nookal.com/dev/objects/appointment) for more information.
+
+    ## Examples
+
+      iex> Nookal.get_documents(%{"page_length" => 1})
+  """
+
+  @spec get_documents(map()) :: {:ok, Nookal.Page.t(Nookal.Document.t())} | {:error, term()}
+
+  def get_documents(params \\ %{}) do
+    with {:ok, payload} <- @client.dispatch("/getPatientFiles", params) do
+          IO.inspect(payload)
+      #    {:ok, raw_documents} <- fetch_results(payload, "appointments"),
+      #    {:ok, page} <- Nookal.Page.new(payload),
+      #    {:ok, documents} <- Nookal.Document.new(raw_documents) do
+      # {:ok, Nookal.Page.put_items(page, documents)}
     end
   end
 
