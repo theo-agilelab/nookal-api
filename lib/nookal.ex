@@ -186,7 +186,7 @@ defmodule Nookal do
 
   ## Examples
 
-    iex> Nookal.get_appointments(%{"page_length" => 1})
+    iex> Nookal.get_appointments(%{"page_length" => 2})
     %Nookal.Page{
       current: 1,
       items: [
