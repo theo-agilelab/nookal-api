@@ -57,6 +57,20 @@ defmodule Nookal.Utils do
     end
   end
 
+  def cast(value, :time) when is_binary(value) do
+    with {:error, _reason} <- Time.from_iso8601(value) do
+      cast_error(value, :time)
+    end
+  end
+
+  def cast(value, :boolean) when is_binary(value) do
+    case value do
+      "1" -> {:ok, true}
+      "0" -> {:ok, false}
+      _other -> cast_error(value, :boolean)
+    end
+  end
+
   def cast(value, type), do: cast_error(value, type)
 
   @compile {:inline, [cast_error: 2]}

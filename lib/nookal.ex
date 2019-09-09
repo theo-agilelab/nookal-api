@@ -180,6 +180,53 @@ defmodule Nookal do
   end
 
   @doc """
+  Get appointments in a page.
+
+  Please check [API specs](https://api.nookal.com/dev/objects/appointment) for more information.
+
+  ## Examples
+
+    iex> Nookal.get_appointments(%{"page_length" => 1})
+    %Nookal.Page{
+      current: 1,
+      items: [
+        %Nookal.Appointment{
+          arrived?: 0,
+          cancellation_date: nil,
+          cancelled?: 0,
+          date: ~D[2019-09-05],
+          date_created: ~N[2019-09-03 05:47:48],
+          date_modified: ~N[2019-09-04 09:28:33],
+          email_reminder_sent?: 0,
+          end_time: nil,
+          id: 1,
+          invoice_generated?: 0,
+          location_id: 1,
+          notes: nil,
+          patient_id: 1,
+          practitioner_id: 1,
+          start_time: nil,
+          type: "Consultation",
+          type_id: 1
+        }
+      ],
+      next: 2
+    }
+      
+  """
+
+  @spec get_appointments(map()) :: {:ok, Nookal.Page.t(Nookal.Appointment.t())} | {:error, term()}
+
+  def get_appointments(params \\ %{}) do
+    with {:ok, payload} <- @client.dispatch("/getAppointments", params),
+         {:ok, raw_appointments} <- fetch_results(payload, "appointments"),
+         {:ok, page} <- Nookal.Page.new(payload),
+         {:ok, appointments} <- Nookal.Appointment.new(raw_appointments) do
+      {:ok, Nookal.Page.put_items(page, appointments)}
+    end
+  end
+
+  @doc """
   Stream pages with the request function.
 
   ## Examples
