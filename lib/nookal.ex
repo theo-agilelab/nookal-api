@@ -245,7 +245,8 @@ defmodule Nookal do
             mime: "image/jpeg",
             name: "profile_image",
             patient_id: 1,
-            status: true
+            status: true,
+            url: "https://s3-ap-southeast-2.amazonaws.com/nookalfiles-au-local/AGILELAB-0001/1/file_5d6e2ab9187b08.77130737?response-content-disposition=attachment%3B%20filename%3Dprofile_image.jpg&response-content-type=image%2Fjpeg&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJOJ72KSKDX4MHBEQ%2F20190911%2Fap-southeast-2%2Fs3%2Faws4_request&X-Amz-Date=20190911T090940Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3600&X-Amz-Signature=5e6dd257f7320200dfe41b6bd860a1a93d06d720daa202e996110dac99f6c255"
           }
         ],
         next: 2
@@ -260,6 +261,26 @@ defmodule Nookal do
          {:ok, page} <- Nookal.Page.new(payload),
          {:ok, documents} <- Nookal.Document.new(raw_documents) do
       {:ok, Nookal.Page.put_items(page, documents)}
+    end
+  end
+
+  @doc """
+    Get url in a page.
+
+    Please check [API specs](https://api.nookal.com/dev/objects/files) for more information.
+
+    ## Examples
+
+      iex> Nookal.get_url(%{"patient_id" => 1, "file_id" => "file_5d6e2ab9187b08.77130737"})
+      "https://s3-ap-southeast-2.amazonaws.com/nookalfiles-au-local/AGILELAB-0001/1/file_5d6e2ab9187b08.77130737?response-content-disposition=attachment%3B%20filename%3Dprofile_image.jpg&response-content-type=image%2Fjpeg&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJOJ72KSKDX4MHBEQ%2F20190911%2Fap-southeast-2%2Fs3%2Faws4_request&X-Amz-Date=20190911T100827Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3600&X-Amz-Signature=ceb3787995a443773276c4453cf9a6afbb1f1cde5705b1c36489165059852ce1"
+  """
+
+  @spec get_url(map()) :: {:ok, Nookal.Page.t(Nookal.Document.t())} | {:error, term()}
+
+  def get_url(params \\ %{}) do
+    with {:ok, payload} <- @client.dispatch("/getFileUrl", params),
+         {:ok, raw_url} <- fetch_results(payload, "url") do
+      raw_url
     end
   end
 
