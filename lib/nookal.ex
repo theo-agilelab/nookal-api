@@ -186,7 +186,7 @@ defmodule Nookal do
 
   ## Examples
 
-    iex> Nookal.get_appointments(%{"page_length" => 2})
+    iex> Nookal.get_appointments(%{"page_length" => 1})
     %Nookal.Page{
       current: 1,
       items: [
@@ -227,24 +227,39 @@ defmodule Nookal do
   end
 
   @doc """
-    Get patients in a page.
+    Get documents in a page.
 
-    Please check [API specs](https://api.nookal.com/dev/objects/appointment) for more information.
+    Please check [API specs](https://api.nookal.com/dev/objects/files) for more information.
 
     ## Examples
 
-      iex> Nookal.get_documents(%{"page_length" => 1})
+      iex> Nookal.get_documents(%{"patient_id" => 1,"page" => 1,"page_length" => 1})
+      %Nookal.Page{
+        current: 1,
+        items: [
+          %Nookal.Document{
+            case_id: nil,
+            extension: "jpg",
+            id: "file_5d6e2ab9187b08.77130737",
+            metadata: nil,
+            mime: "image/jpeg",
+            name: "profile_image",
+            patient_id: 1,
+            status: true
+          }
+        ],
+        next: 2
+      }
   """
 
   @spec get_documents(map()) :: {:ok, Nookal.Page.t(Nookal.Document.t())} | {:error, term()}
 
   def get_documents(params \\ %{}) do
-    with {:ok, payload} <- @client.dispatch("/getPatientFiles", params) do
-          IO.inspect(payload)
-      #    {:ok, raw_documents} <- fetch_results(payload, "appointments"),
-      #    {:ok, page} <- Nookal.Page.new(payload),
-      #    {:ok, documents} <- Nookal.Document.new(raw_documents) do
-      # {:ok, Nookal.Page.put_items(page, documents)}
+    with {:ok, payload} <- @client.dispatch("/getPatientFiles", params),
+         {:ok, raw_documents} <- fetch_results(payload, "files"),
+         {:ok, page} <- Nookal.Page.new(payload),
+         {:ok, documents} <- Nookal.Document.new(raw_documents) do
+      {:ok, Nookal.Page.put_items(page, documents)}
     end
   end
 

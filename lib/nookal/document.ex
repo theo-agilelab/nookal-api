@@ -1,13 +1,15 @@
 defmodule Nookal.Document do
   import Nookal.Utils
+
   @type t() :: %__MODULE__{
-    id: integer(),
+    id: String.t(),
     mime: String.t(),
     name: String.t(),
     extension: String.t(),
     patient_id: integer(),
     case_id: integer(),
-    status: String.t()
+    status: Boolean.t(),
+    metadata: String.t()
   }
 
   defstruct [
@@ -17,17 +19,19 @@ defmodule Nookal.Document do
     :extension,
     :patient_id,
     :case_id,
-    :status
+    :status,
+    :metadata
   ]
 
   @mapping [
-    {:id, "", :integer},
-    {:mime, "", :string},
-    {:name, "", :string},
-    {:extension, "", :string},
-    {:patient_id, "", :integer},
-    {:case_id, "", :integer},
-    {:status, "", :string}
+    {:id, "ID", :string},
+    {:mime, "mime", :string},
+    {:name, "name", :string},
+    {:extension, "extension", :string},
+    {:patient_id, "patientID", :integer},
+    {:case_id, "caseID", :integer},
+    {:status, "status", :boolean},
+    {:metadata, "metadata", :string}
   ]
 
   def new(payload) when is_list(payload) do
