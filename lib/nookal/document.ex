@@ -2,16 +2,16 @@ defmodule Nookal.Document do
   import Nookal.Utils
 
   @type t() :: %__MODULE__{
-    id: String.t(),
-    mime: String.t(),
-    name: String.t(),
-    extension: String.t(),
-    patient_id: integer(),
-    case_id: integer(),
-    status: Boolean.t(),
-    metadata: String.t(),
-    url: String.t()
-  }
+          id: String.t(),
+          mime: String.t(),
+          name: String.t(),
+          extension: String.t(),
+          patient_id: integer(),
+          case_id: integer(),
+          status: Boolean.t(),
+          metadata: String.t(),
+          url: String.t()
+        }
 
   defstruct [
     :id,
@@ -45,14 +45,12 @@ defmodule Nookal.Document do
       document =
         document
         |> Map.replace!(:url, new_url(payload))
+
       {:ok, document}
     end
   end
 
   def new_url(document) do
-    url = Nookal.get_url(%{"patient_id" => document["patientID"],
-                          "file_id" => document["ID"]
-                        })
-
+    Nookal.get_file_url(%{"patient_id" => document["patientID"], "file_id" => document["ID"]})
   end
 end

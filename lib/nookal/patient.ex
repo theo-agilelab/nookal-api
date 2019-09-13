@@ -8,6 +8,7 @@ defmodule Nookal.Patient do
           middle_name: String.t(),
           last_name: String.t(),
           nickname: String.t(),
+          name: String.t(),
           dob: Date.t(),
           gender: String.t(),
           notes: String.t(),
@@ -32,6 +33,7 @@ defmodule Nookal.Patient do
     :middle_name,
     :last_name,
     :nickname,
+    :name,
     :dob,
     :gender,
     :notes,
@@ -81,6 +83,7 @@ defmodule Nookal.Patient do
         patient
         |> Map.replace!(:address, new_address(payload))
         |> Map.replace!(:postal_address, new_postal_address(payload))
+        |> Map.replace!(:name, generate_name(payload))
 
       {:ok, patient}
     end
@@ -128,5 +131,9 @@ defmodule Nookal.Patient do
       {:ok, address} -> address
       {:error, _reason} -> nil
     end
+  end
+
+  defp generate_name(payload) do
+    payload["FirstName"] <> " " <> payload["LastName"]
   end
 end
