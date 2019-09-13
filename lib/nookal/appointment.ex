@@ -15,7 +15,7 @@ defmodule Nookal.Appointment do
           arrived?: Boolean.t(),
           cancelled?: Boolean.t(),
           invoice_generated?: Boolean.t(),
-          cancellation_date: Date.t(),
+          cancellation_date: NaiveDateTime.t(),
           notes: String.t(),
           date_created: NaiveDateTime.t(),
           date_modified: NaiveDateTime.t()
@@ -55,7 +55,7 @@ defmodule Nookal.Appointment do
     {:arrived?, "arrived", :boolean},
     {:cancelled?, "cancelled", :boolean},
     {:invoice_generated?, "invoiceGenerated", :boolean},
-    {:cancellation_date, "cancellationDate", :date},
+    {:cancellation_date, "cancellationDate", :naive_date_time},
     {:notes, "Notes", :string},
     {:date_created, "dateCreated", :naive_date_time},
     {:date_modified, "lastModified", :naive_date_time}
@@ -66,6 +66,7 @@ defmodule Nookal.Appointment do
   end
 
   def new(payload) do
+    IO.inspect(payload)
     with {:ok, appointment} <- extract_fields(@mapping, payload, %__MODULE__{}) do
       {:ok, appointment}
     end
