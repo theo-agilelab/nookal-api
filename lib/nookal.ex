@@ -286,6 +286,24 @@ defmodule Nookal do
   end
 
   @doc """
+    Get Treatment Notes.
+
+    Please check [API specs](https://api.nookal.com/dev/objects/treatment) for more information.
+
+    ## Examples
+
+    iex> 
+  """
+
+  spec get_treatment_notes(map()) :: {:ok, Nookal.Page.t(Nookal.TreatmentNote.t())} | {:error, term()}
+
+  def get_treatment_notes(params \\ %{}) do
+    with {:ok, payload} <- @client.dispatch("getTreatmentNotes") do
+      IO.inspect(payload)
+    end
+  end
+
+  @doc """
   Stream pages with the request function.
 
   ## Examples
