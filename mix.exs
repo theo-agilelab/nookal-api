@@ -62,7 +62,8 @@ defmodule Nookal.MixProject do
           Nookal.Patient,
           Nookal.Practitioner,
           Nookal.Service,
-          Nookal.TreatmentNote
+          Nookal.TreatmentNote,
+          Nookal.Document
         ]
       ]
     ]

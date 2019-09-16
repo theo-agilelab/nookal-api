@@ -227,6 +227,64 @@ defmodule Nookal do
   end
 
   @doc """
+  Get documents in a page.
+
+  Please check [API specs](https://api.nookal.com/dev/objects/files) for more information.
+
+  ## Examples
+
+    iex> Nookal.get_documents(%{"patient_id" => 1, "page" => 1, "page_length" => 1})
+    %Nookal.Page{
+      current: 1,
+      items: [
+        %Nookal.Document{
+          case_id: nil,
+          extension: "jpg",
+          id: "file_5d6e2ab9187b08.77130737",
+          metadata: nil,
+          mime: "image/jpeg",
+          name: "profile_image",
+          patient_id: 1,
+          status: true,
+          url: "https://example.com/image.png"
+        }
+      ],
+      next: 2
+    }
+  """
+
+  @spec get_documents(map()) :: {:ok, Nookal.Page.t(Nookal.Document.t())} | {:error, term()}
+
+  def get_documents(params \\ %{}) do
+    with {:ok, payload} <- @client.dispatch("/getPatientFiles", params),
+         {:ok, raw_documents} <- fetch_results(payload, "files"),
+         {:ok, page} <- Nookal.Page.new(payload),
+         {:ok, documents} <- Nookal.Document.new(raw_documents) do
+      {:ok, Nookal.Page.put_items(page, documents)}
+    end
+  end
+
+  @doc """
+  Get file URL.
+
+  Please check [API specs](https://api.nookal.com/dev/objects/files) for more information.
+
+  ## Examples
+
+      iex> Nookal.get_file_url(%{"patient_id" => 1, "file_id" => "file_5d6e2ab9187b08.77130737"})
+      "https:example.com/image.png"
+  """
+
+  @spec get_file_url(map()) :: {:ok, String.t()} | {:error, term()}
+
+  def get_file_url(params \\ %{}) do
+    with {:ok, payload} <- @client.dispatch("/getFileUrl", params),
+         {:ok, raw_url} <- fetch_results(payload, "url") do
+      raw_url
+    end
+  end
+
+  @doc """
   Stream pages with the request function.
 
   ## Examples

@@ -1,0 +1,46 @@
+defmodule Nookal.Document do
+  import Nookal.Utils
+
+  @type t() :: %__MODULE__{
+          id: String.t(),
+          mime: String.t(),
+          name: String.t(),
+          extension: String.t(),
+          patient_id: integer(),
+          case_id: integer(),
+          status: Boolean.t(),
+          metadata: String.t(),
+          url: String.t()
+        }
+
+  defstruct [
+    :id,
+    :mime,
+    :name,
+    :extension,
+    :patient_id,
+    :case_id,
+    :status,
+    :metadata,
+    :url
+  ]
+
+  @mapping [
+    {:id, "ID", :string},
+    {:mime, "mime", :string},
+    {:name, "name", :string},
+    {:extension, "extension", :string},
+    {:patient_id, "patientID", :integer},
+    {:case_id, "caseID", :integer},
+    {:status, "status", :boolean},
+    {:metadata, "metadata", :string}
+  ]
+
+  def new(payload) when is_list(payload) do
+    all_or_none_map(payload, &new/1)
+  end
+
+  def new(payload) do
+    extract_fields(@mapping, payload, %__MODULE__{})
+  end
+end
