@@ -81,7 +81,6 @@ defmodule Nookal.Patient do
         patient
         |> Map.replace!(:address, new_address(payload))
         |> Map.replace!(:postal_address, new_postal_address(payload))
-        |> Map.replace!(:name, generate_name(payload))
 
       {:ok, patient}
     end
