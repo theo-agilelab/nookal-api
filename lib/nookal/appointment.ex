@@ -66,8 +66,6 @@ defmodule Nookal.Appointment do
   end
 
   def new(payload) do
-    with {:ok, appointment} <- extract_fields(@mapping, payload, %__MODULE__{}) do
-      {:ok, appointment}
-    end
+    extract_fields(@mapping, payload, %__MODULE__{})
   end
 end
