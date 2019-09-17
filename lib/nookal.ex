@@ -341,8 +341,9 @@ defmodule Nookal do
   def get_treatment_notes(params \\ %{}) do
     with {:ok, payload} <- @client.dispatch("/getTreatmentNotes", params),
          {:ok, raw_treatment_notes} <- fetch_results(payload, "notes"),
+         {:ok, page} <- Nookal.Page.new(payload),
          {:ok, treatment_notes} <- Nookal.TreatmentNote.new(raw_treatment_notes) do
-      {:ok, treatment_notes}
+      {:ok, Nookal.Page.put_items(page, treatment_notes)}
     end
   end
 
