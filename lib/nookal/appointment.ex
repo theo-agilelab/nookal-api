@@ -66,7 +66,6 @@ defmodule Nookal.Appointment do
   end
 
   def new(payload) do
-    IO.inspect(payload)
     with {:ok, appointment} <- extract_fields(@mapping, payload, %__MODULE__{}) do
       {:ok, appointment}
     end
