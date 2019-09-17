@@ -286,20 +286,62 @@ defmodule Nookal do
   end
 
   @doc """
-    Get Treatment Notes.
+  Get Treatment Notes.
 
-    Please check [API specs](https://api.nookal.com/dev/objects/treatment) for more information.
+  Please check [API specs](https://api.nookal.com/dev/objects/treatment) for more information.
 
-    ## Examples
+  ## Examples
 
-    iex> 
+    iex> Nookal.get_treatment_notes(%{"patient_id" => 1})
+    %Nookal.TreatmentNote{
+      answers: %{
+        "fields" => [
+          %{
+            "answers" => [
+              "chart_5d7f35a2ef5713.01289346",
+              %{"x" => "0", "y" => "0"},
+              "0"
+            ],
+            "chart" => "/v2.0/filemanager/getChartImage/chart?decache=1568618132",
+            "id" => 1
+          }
+        ]
+      },
+      case_id: 1,
+      html: nil,
+      id: 1,
+      patient_id: 1,
+      practitioner_id: 1,
+      template: %{
+        "_id" => "17",
+        "active" => "1",
+        "count" => 1,
+        "discipline" => "General",
+        "fields" => [
+          %{
+            "id" => 1,
+            "name" => "Chart",
+            "options" => %{"help" => "", "placeholder" => ""},
+            "type" => "Chart"
+          }
+        ],
+        "history" => nil,
+        "isChart" => "1",
+        "lastUpdated" => "2017-06-05 10:35:07",
+        "locationIDs" => nil,
+        "name" => "Chart",
+        "trackingID" => nil
+      }
+    }
   """
 
-  spec get_treatment_notes(map()) :: {:ok, Nookal.Page.t(Nookal.TreatmentNote.t())} | {:error, term()}
+  @spec get_treatment_notes(map()) :: {:ok, Nookal.Page.t(Nookal.TreatmentNote.t())} | {:error, term()}
 
   def get_treatment_notes(params \\ %{}) do
-    with {:ok, payload} <- @client.dispatch("getTreatmentNotes") do
-      IO.inspect(payload)
+    with {:ok, payload} <- @client.dispatch("/getTreatmentNotes", params),
+      {:ok, raw_treatment_notes} <- fetch_results(payload, "notes"),
+      {:ok, treatment_notes} <- Nookal.TreatmentNote.new(raw_treatment_notes) do
+        IO.inspect(treatment_notes)
     end
   end
 

@@ -71,6 +71,10 @@ defmodule Nookal.Utils do
     end
   end
 
+  def cast(value, :original) do
+    {:ok, value}
+  end
+
   def cast(value, type), do: cast_error(value, type)
 
   @compile {:inline, [cast_error: 2]}
