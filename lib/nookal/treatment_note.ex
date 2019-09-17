@@ -2,13 +2,13 @@ defmodule Nookal.TreatmentNote do
   import Nookal.Utils
 
   @type t() :: %__MODULE__{
-    id: integer(),
-    patient_id: integer(),
-    practitioner_id: integer(),
-    case_id: integer(),
-    answers: Original.t(),
-    template: Original.t()
-  }
+          id: integer(),
+          patient_id: integer(),
+          practitioner_id: integer(),
+          case_id: integer(),
+          answers: Original.t(),
+          template: Original.t()
+        }
 
   defstruct [:id, :patient_id, :practitioner_id, :case_id, :html, :answers, :template]
 
