@@ -30,8 +30,10 @@ defmodule Nookal.TreatmentNote do
   end
 
   def new(payload) do
-    with {:ok, treatment_notes} <- extract_fields(@mapping, payload, %__MODULE__{}) do
-      {:ok, treatment_notes}
+    if payload["status"] != "deleted" do
+      with {:ok, treatment_notes} <- extract_fields(@mapping, payload, %__MODULE__{}) do
+        {:ok, treatment_notes}
+      end
     end
   end
 end

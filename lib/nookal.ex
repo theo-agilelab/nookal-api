@@ -339,11 +339,12 @@ defmodule Nookal do
           {:ok, Nookal.Page.t(Nookal.TreatmentNote.t())} | {:error, term()}
 
   def get_treatment_notes(params \\ %{}) do
-    with {:ok, payload} <- @client.dispatch("/getTreatmentNotes", params),
-         {:ok, raw_treatment_notes} <- fetch_results(payload, "notes"),
-         {:ok, page} <- Nookal.Page.new(payload),
-         {:ok, treatment_notes} <- Nookal.TreatmentNote.new(raw_treatment_notes) do
-      {:ok, Nookal.Page.put_items(page, treatment_notes)}
+    with {:ok, payload} <- @client.dispatch("/getTreatmentNotes", params) do
+      IO.inspect(payload)
+      #    {:ok, raw_treatment_notes} <- fetch_results(payload, "notes"),
+      #    {:ok, page} <- Nookal.Page.new(payload),
+      #    {:ok, treatment_notes} <- Nookal.TreatmentNote.new(raw_treatment_notes) do
+      # {:ok, Nookal.Page.put_items(page, treatment_notes)}
     end
   end
 
