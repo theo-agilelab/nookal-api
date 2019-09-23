@@ -9,8 +9,7 @@ defmodule Nookal.Document do
           patient_id: integer(),
           case_id: integer(),
           status: Boolean.t(),
-          metadata: String.t(),
-          url: String.t()
+          metadata: String.t()
         }
 
   defstruct [
@@ -21,8 +20,7 @@ defmodule Nookal.Document do
     :patient_id,
     :case_id,
     :status,
-    :metadata,
-    :url
+    :metadata
   ]
 
   @mapping [
@@ -50,7 +48,7 @@ defmodule Nookal.Document do
     end
   end
 
-  def new_url(document) do
-    Nookal.get_file_url(%{"patient_id" => document["patientID"], "file_id" => document["ID"]})
-  end
+  # def new_url(document) do
+  #   Nookal.get_file_url(%{"patient_id" => document["patientID"], "file_id" => document["ID"]})
+  # end
 end
