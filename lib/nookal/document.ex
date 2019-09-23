@@ -40,10 +40,6 @@ defmodule Nookal.Document do
 
   def new(payload) do
     with {:ok, document} <- extract_fields(@mapping, payload, %__MODULE__{}) do
-      document =
-        document
-        |> Map.replace!(:url, new_url(payload))
-
       {:ok, document}
     end
   end
