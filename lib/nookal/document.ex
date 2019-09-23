@@ -43,8 +43,4 @@ defmodule Nookal.Document do
       {:ok, document}
     end
   end
-
-  # def new_url(document) do
-  #   Nookal.get_file_url(%{"patient_id" => document["patientID"], "file_id" => document["ID"]})
-  # end
 end
