@@ -348,6 +348,28 @@ defmodule Nookal do
   end
 
   @doc """
+  Add a Treatment Note to Nookal
+
+  Please check [API specs](https://api.nookal.com/dev/objects/treatment) for more information.
+
+  ## Examples
+    iex> Nookal.add_treatment_note(%{"case_id" => 1, "notes" => "This is for add Treatment Note example 2", "patient_id" => 1, "practitioner_id" => 1, "date" => "25/09/2019"})
+    {
+      "status": "success"
+    }
+  """
+
+  @spec add_treatment_note(map()) ::
+          {:ok, String.t()} | {:error, term()}
+
+  def add_treatment_note(params) do
+    with {:ok, payload} <- @client.dispatch("/addTreatmentNote", params),
+      {:ok, status} <- fetch_status(payload) do
+      {:ok, status}
+    end
+  end
+
+  @doc """
   Stream pages with the request function.
 
   ## Examples
@@ -436,6 +458,15 @@ defmodule Nookal do
 
       _other ->
         {:error, {:malformed_payload, "could not fetch #{inspect(key)} from payload"}}
+    end
+  end
+
+  defp fetch_status(payload) do
+    case payload do
+      %{"status" => status} ->
+        {:ok, status}
+      _other ->
+      {:error, {:malformed_payload, "could not fetch status from payload"}}
     end
   end
 end
