@@ -8,10 +8,11 @@ defmodule Nookal.TreatmentNote do
           case_id: integer(),
           answers: Original.t(),
           template: Original.t(),
-          date: NaiveDateTime.t()
+          date: NaiveDateTime.t(),
+          status: String.t()
         }
 
-  defstruct [:id, :patient_id, :practitioner_id, :case_id, :answers, :template, :date]
+  defstruct [:id, :patient_id, :practitioner_id, :case_id, :answers, :template, :date, :status]
 
   @mapping [
     {:id, "noteID", :integer},
@@ -20,7 +21,8 @@ defmodule Nookal.TreatmentNote do
     {:case_id, "caseID", :integer},
     {:answers, "answers", :original},
     {:template, "template", :original},
-    {:date, "date", :naive_date_time}
+    {:date, "date", :naive_date_time},
+    {:status, "status", :string}
   ]
 
   def new(payload) when is_list(payload) do

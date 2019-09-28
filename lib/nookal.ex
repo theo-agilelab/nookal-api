@@ -292,7 +292,7 @@ defmodule Nookal do
 
   ## Examples
 
-    iex> Nookal.get_treatment_notes(%{"patient_id" => 1})
+    iex> Nookal.get_treatment_notes(%{"patient_id" => 1, "page" => 1, "page_length" => 1})
     %Nookal.TreatmentNote{
       answers: %{
         "fields" => [
