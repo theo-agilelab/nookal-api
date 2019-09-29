@@ -339,12 +339,11 @@ defmodule Nookal do
           {:ok, Nookal.Page.t(Nookal.TreatmentNote.t())} | {:error, term()}
 
   def get_treatment_notes(params \\ %{}) do
-    with {:ok, payload} <- @client.dispatch("/getTreatmentNotes", params) do
-      IO.inspect(payload)
-      #    {:ok, raw_treatment_notes} <- fetch_results(payload, "notes"),
-      #    {:ok, page} <- Nookal.Page.new(payload),
-      #    {:ok, treatment_notes} <- Nookal.TreatmentNote.new(raw_treatment_notes) do
-      # {:ok, Nookal.Page.put_items(page, treatment_notes)}
+    with {:ok, payload} <- @client.dispatch("/getTreatmentNotes", params),
+         {:ok, raw_treatment_notes} <- fetch_results(payload, "notes"),
+         {:ok, page} <- Nookal.Page.new(payload),
+         {:ok, treatment_notes} <- Nookal.TreatmentNote.new(raw_treatment_notes) do
+      {:ok, Nookal.Page.put_items(page, treatment_notes)}
     end
   end
 
@@ -354,7 +353,7 @@ defmodule Nookal do
   Please check [API specs](https://api.nookal.com/dev/objects/treatment) for more information.
 
   ## Examples
-    iex> Nookal.add_treatment_note(%{"case_id" => 1, "notes" => "This is for add Treatment Note example 2", "patient_id" => 1, "practitioner_id" => 1, "date" => "25/09/2019"})
+    iex> Nookal.add_treatment_note(%{"case_id" => 1, "notes" => "This is for add Treatment Note example 1", "patient_id" => 1, "practitioner_id" => 1, "date" => "25/09/2019"})
     {
       "status": "success"
     }
@@ -365,8 +364,8 @@ defmodule Nookal do
 
   def add_treatment_note(params) do
     with {:ok, payload} <- @client.dispatch("/addTreatmentNote", params),
-      {:ok, status} <- fetch_status(payload) do
-      {:ok, status}
+      {:ok, note_id} <- fetch_results(payload, "note_id") do
+      {:ok, note_id}
     end
   end
 
@@ -459,15 +458,6 @@ defmodule Nookal do
 
       _other ->
         {:error, {:malformed_payload, "could not fetch #{inspect(key)} from payload"}}
-    end
-  end
-
-  defp fetch_status(payload) do
-    case payload do
-      %{"status" => status} ->
-        {:ok, status}
-      _other ->
-      {:error, {:malformed_payload, "could not fetch status from payload"}}
     end
   end
 end
