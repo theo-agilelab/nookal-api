@@ -247,7 +247,6 @@ defmodule Nookal do
           name: "profile_image",
           patient_id: 1,
           status: true,
-          url: "https://example.com/image.png"
         }
       ],
       next: 2
