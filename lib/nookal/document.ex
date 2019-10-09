@@ -8,7 +8,6 @@ defmodule Nookal.Document do
           extension: String.t(),
           patient_id: integer(),
           case_id: integer(),
-          status: Boolean.t(),
           metadata: String.t()
         }
 
@@ -19,7 +18,6 @@ defmodule Nookal.Document do
     :extension,
     :patient_id,
     :case_id,
-    :status,
     :metadata
   ]
 
@@ -30,7 +28,6 @@ defmodule Nookal.Document do
     {:extension, "extension", :string},
     {:patient_id, "patientID", :integer},
     {:case_id, "caseID", :integer},
-    {:status, "status", :boolean},
     {:metadata, "metadata", :string}
   ]
 
