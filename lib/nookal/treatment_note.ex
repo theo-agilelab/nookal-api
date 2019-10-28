@@ -31,7 +31,11 @@ defmodule Nookal.TreatmentNote do
 
   def new(payload) do
     with {:ok, treatment_notes} <- extract_fields(@mapping, payload, %__MODULE__{}) do
-      {:ok, treatment_notes}
+        {:ok, treatment_notes}
     end
+  end
+
+  def fetch_valid_data(treatment_notes) do
+    Enum.filter(treatment_notes, &match?(%Nookal.TreatmentNote{:status => x} when (x != "deleted"), &1))
   end
 end
