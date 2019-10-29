@@ -58,8 +58,7 @@ defmodule Nookal.Connection do
     {:connect, :reconnect, state}
   end
 
-  def handle_call({:request, method, path, headers, body}, from, state) do
-    :timer.sleep(5_000)
+  def handle_call({:request, method, path, headers, body, }, from, state) do
     case Mint.HTTP.request(state.conn, method, path, headers, body) do
       {:ok, conn, request_ref} ->
         state = %{state | conn: conn}
