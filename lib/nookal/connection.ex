@@ -7,6 +7,8 @@ defmodule Nookal.Connection do
 
   defstruct [:endpoint_uri, :conn, requests: %{}]
 
+  @timeout 30_000
+
   def child_spec(endpoint_uri) do
     %{
       start: {__MODULE__, :start_link, [endpoint_uri]}
@@ -22,7 +24,7 @@ defmodule Nookal.Connection do
   end
 
   def request(method, path, headers, body) do
-    Connection.call(__MODULE__, {:request, method, path, headers, body})
+    Connection.call(__MODULE__, {:request, method, path, headers, body}, @timeout)
   end
 
   def connect(_info, state) do
@@ -57,11 +59,11 @@ defmodule Nookal.Connection do
   end
 
   def handle_call({:request, method, path, headers, body}, from, state) do
+    :timer.sleep(5_000)
     case Mint.HTTP.request(state.conn, method, path, headers, body) do
       {:ok, conn, request_ref} ->
         state = %{state | conn: conn}
         state = put_in(state.requests[request_ref], %{from: from, response: %{}})
-
         {:noreply, state}
 
       {:error, _conn, reason} ->
