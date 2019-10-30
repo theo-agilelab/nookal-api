@@ -36,7 +36,7 @@ defmodule Nookal.Connection do
         {:stop, :invalid_uri, state}
 
       {:error, _reason} ->
-        {:backoff, 1_000, state}
+        {:backoff, 10_000, state}
     end
   end
 
@@ -58,7 +58,7 @@ defmodule Nookal.Connection do
     {:connect, :reconnect, state}
   end
 
-  def handle_call({:request, method, path, headers, body, }, from, state) do
+  def handle_call({:request, method, path, headers, body}, from, state) do
     case Mint.HTTP.request(state.conn, method, path, headers, body) do
       {:ok, conn, request_ref} ->
         state = %{state | conn: conn}
