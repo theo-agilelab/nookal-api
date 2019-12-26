@@ -8,7 +8,8 @@ defmodule Nookal.Document do
           extension: String.t(),
           patient_id: integer(),
           case_id: integer(),
-          metadata: String.t()
+          metadata: String.t(),
+          status: String.t()
         }
 
   defstruct [
@@ -18,7 +19,8 @@ defmodule Nookal.Document do
     :extension,
     :patient_id,
     :case_id,
-    :metadata
+    :metadata,
+    :status
   ]
 
   @mapping [
@@ -28,7 +30,8 @@ defmodule Nookal.Document do
     {:extension, "extension", :string},
     {:patient_id, "patientID", :integer},
     {:case_id, "caseID", :integer},
-    {:metadata, "metadata", :string}
+    {:metadata, "metadata", :string},
+    {:status, "status", :string}
   ]
 
   def new(payload) when is_list(payload) do
@@ -39,5 +42,9 @@ defmodule Nookal.Document do
     with {:ok, document} <- extract_fields(@mapping, payload, %__MODULE__{}) do
       {:ok, document}
     end
+  end
+
+  def fetch_valid_data(documents) do
+    Enum.filter(documents, &match?(%Nookal.Document{:status => x} when (x != "0"), &1))
   end
 end

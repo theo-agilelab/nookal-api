@@ -259,7 +259,8 @@ defmodule Nookal do
     with {:ok, payload} <- @client.dispatch("/getPatientFiles", params),
          {:ok, raw_documents} <- fetch_results(payload, "files"),
          {:ok, page} <- Nookal.Page.new(payload),
-         {:ok, documents} <- Nookal.Document.new(raw_documents) do
+         {:ok, documents} <- Nookal.Document.new(raw_documents),
+         documents <- Nookal.Document.fetch_valid_data(documents) do
       {:ok, Nookal.Page.put_items(page, documents)}
     end
   end
