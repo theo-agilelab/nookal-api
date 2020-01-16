@@ -180,6 +180,68 @@ defmodule Nookal do
   end
 
   @doc """
+  Get patients in a page.
+
+  Please check [API specs](https://api.nookal.com/dev/reference/patient) for more information.
+
+  ## Examples
+
+    iex> Nookal.search_patient(%{"patient_id" => 7460})
+    %Nookal.Patient{
+      address: %Nookal.Address{
+        city: "",
+        country: "Singapore",
+        line1: "4 Toh Yi Drive #07-205",
+        line2: "",
+        line3: "",
+        postcode: "590004",
+        state: ""
+      },
+      alerts: "",
+      category: "",
+      date_created: ~N[2019-11-30 04:20:32],
+      date_modified: ~N[2020-01-02 11:11:19],
+      dob: ~D[1989-07-21],
+      email: "jun2107@gmail.com",
+      employer: "",
+      first_name: "Jun Jie",
+      gender: "M",
+      id: 7460,
+      last_name: "Lim",
+      location_id: 0,
+      middle_name: "",
+      mobile: "9071 8619",
+      name: "Jun Jie Lim",
+      nickname: "",
+      notes: "++++***APPT POLICY***\r\nDN advd OSA 2x/wk Mon/Thu-1150 for 4mth till M4 (at31/12/19)\r\n\r\nCR(jumpout) w CA re HE pop quiz 09/01/20-1140 (sh31/12/19)\r\n\r\nCR w CA to  teach home exercise 02/01/20-1140 (sh31/12/19)\r\n\r\n________________________________________________________\r\nAwaiting xrays, xrays to be taken by 05/12/19, DN advd DM: Wife, xrays policy signed (sh30/11/19) \r\n FOC checkup, xrays & care  (at30/11/19) \r\nWife: Aileen Seah",
+      occupation: "",
+      online_code: "4VEQAB",
+      postal_address: %Nookal.Address{
+        city: "",
+        country: "",
+        line1: "",
+        line2: "",
+        line3: "",
+        postcode: "",
+        state: ""
+      },
+      title: "Mr"
+    }
+  """
+
+  @spec search_patient(map()) :: {:ok, Nookal.Page.t(Nookal.Patient.t())} | {:error, term()}
+
+  def search_patient(params \\ %{}) do
+    with {:ok, payload} <- @client.dispatch("/searchPatients", params),
+      {:ok, raw_patient} <- fetch_results(payload, "patients"),
+      {:ok, patient} <- Nookal.Patient.new(raw_patient) do
+      List.first(patient)
+    end
+  end
+
+  
+
+  @doc """
   Get appointments in a page.
 
   Please check [API specs](https://api.nookal.com/dev/objects/appointment) for more information.
