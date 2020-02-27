@@ -429,6 +429,8 @@ defmodule Nookal do
     with {:ok, payload} <- @client.dispatch("/addTreatmentNote", params),
       {:ok, note_id} <- fetch_results(payload, "note_id") do
       {:ok, note_id}
+    else
+      :error -> :error
     end
   end
 
