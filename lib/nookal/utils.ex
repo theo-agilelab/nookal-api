@@ -40,11 +40,11 @@ defmodule Nookal.Utils do
     {:ok, value}
   end
 
-  def cast(value, :date) when is_binary(value) do
-    with {:error, _reason} <- Date.from_iso8601(value) do
-      cast_error(value, :date)
-    end
-  end
+  # def cast(value, :date) when is_binary(value) do
+  #   with {:error, _reason} <- Date.from_iso8601(value) do
+  #     cast_error(value, :date)
+  #   end
+  # end
 
   def cast(value, :naive_date_time) when is_binary(value) do
     with [date, time] <- String.split(value, " "),
