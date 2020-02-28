@@ -430,7 +430,7 @@ defmodule Nookal do
       {:ok, note_id} <- fetch_results(payload, "note_id") do
       {:ok, note_id}
     else
-      :error -> :error
+      {:error, reason} -> :error
     end
   end
 
