@@ -416,7 +416,7 @@ defmodule Nookal do
   Please check [API specs](https://api.nookal.com/dev/objects/treatment) for more information.
 
   ## Examples
-    iex> Nookal.add_treatment_note(%{"case_id" => 1, "notes" => "This is for add Treatment Note example 1", "patient_id" => 1, "practitioner_id" => 1, "date" => "25/09/2019"})
+    iex> Nookal.add_treatment_note(%{"case_id" => 1, "notes" => "This is for add Treatment Note example 1", "patient_id" => "", "practitioner_id" => 1, "date" => "25/09/2019"})
     {
       "status": "success"
     }
@@ -430,7 +430,7 @@ defmodule Nookal do
       {:ok, note_id} <- fetch_results(payload, "note_id") do
       {:ok, note_id}
     else
-      {:error, reason} -> :error
+      {:error, reason} -> {:error, reason}
     end
   end
 
