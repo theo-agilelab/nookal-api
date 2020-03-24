@@ -12,6 +12,7 @@ defmodule Nookal.Appointment do
           type_id: integer(),
           practitioner_id: integer(),
           email_reminder_sent?: Boolean.t(),
+          arrived?: Boolean.t(),
           cancelled?: Boolean.t(),
           invoice_generated?: Boolean.t(),
           cancellation_date: NaiveDateTime.t(),
@@ -31,6 +32,7 @@ defmodule Nookal.Appointment do
     :type_id,
     :practitioner_id,
     :email_reminder_sent?,
+    :arrived?,
     :cancelled?,
     :invoice_generated?,
     :cancellation_date,
@@ -50,6 +52,7 @@ defmodule Nookal.Appointment do
     {:type_id, "appointmentTypeID", :integer},
     {:practitioner_id, "practitionerID", :integer},
     {:email_reminder_sent?, "emailReminderSent", :boolean},
+    {:arrived?, "arrived", :boolean},
     {:cancelled?, "cancelled", :boolean},
     {:invoice_generated?, "invoiceGenerated", :boolean},
     {:cancellation_date, "cancellationDate", :naive_date_time},
@@ -66,5 +69,9 @@ defmodule Nookal.Appointment do
     with {:ok, appointment} <- extract_fields(@mapping, payload, %__MODULE__{}) do
       {:ok, appointment}
     end
+  end
+
+  def fetch_valid_data(treatment_notes) do
+    Enum.filter(treatment_notes, &match?(%Nookal.Appointment{:cancelled? => x} when (x == false), &1))
   end
 end

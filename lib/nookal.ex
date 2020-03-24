@@ -283,7 +283,8 @@ defmodule Nookal do
     with {:ok, payload} <- @client.dispatch("/getAppointments", params),
          {:ok, raw_appointments} <- fetch_results(payload, "appointments"),
          {:ok, page} <- Nookal.Page.new(payload),
-         {:ok, appointments} <- Nookal.Appointment.new(raw_appointments) do
+         {:ok, appointments} <- Nookal.Appointment.new(raw_appointments),
+         appointments <- Nookal.Appointment.fetch_valid_data(appointments) do
       {:ok, Nookal.Page.put_items(page, appointments)}
     end
   end
