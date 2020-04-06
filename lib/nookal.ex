@@ -239,6 +239,16 @@ defmodule Nookal do
     end
   end
 
+  @spec search_patients(map()) :: {:ok, Nookal.Page.t(Nookal.Patient.t())} | {:error, term()}
+
+  def search_patients(params \\ %{}) do
+    with {:ok, payload} <- @client.dispatch("/searchPatients", params),
+      {:ok, raw_patients} <- fetch_results(payload, "patients"),
+      {:ok, patients} <- Nookal.Patient.new(raw_patients) do
+      patients
+    end
+  end
+
   
 
   @doc """
@@ -431,7 +441,7 @@ defmodule Nookal do
       {:ok, note_id} <- fetch_results(payload, "note_id") do
       {:ok, note_id}
     else
-      {:error, reason} -> :error
+      {:error, _reason} -> :error
     end
   end
 
