@@ -72,6 +72,6 @@ defmodule Nookal.Appointment do
   end
 
   def fetch_valid_data(treatment_notes) do
-    Enum.filter(treatment_notes, &match?(%Nookal.Appointment{:cancelled? => x, :arrived? => y} when (x == false and y == false), &1))
+    Enum.filter(treatment_notes, &match?(%Nookal.Appointment{:cancelled? => x, :arrived? => y} when (x == false or y == false), &1))
   end
 end
