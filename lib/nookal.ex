@@ -235,7 +235,7 @@ defmodule Nookal do
     with {:ok, payload} <- @client.dispatch("/searchPatients", params),
       {:ok, raw_patient} <- fetch_results(payload, "patients"),
       {:ok, patient} <- Nookal.Patient.new(raw_patient) do
-      List.first(patient)
+      {:ok, List.first(patient)}
     end
   end
 
@@ -244,8 +244,9 @@ defmodule Nookal do
   def search_patients(params \\ %{}) do
     with {:ok, payload} <- @client.dispatch("/searchPatients", params),
       {:ok, raw_patients} <- fetch_results(payload, "patients"),
+      {:ok, page} <- Nookal.Page.new(payload),
       {:ok, patients} <- Nookal.Patient.new(raw_patients) do
-      patients
+        {:ok, Nookal.Page.put_items(page, patients)}
     end
   end
 
