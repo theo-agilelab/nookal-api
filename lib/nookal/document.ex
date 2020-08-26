@@ -45,6 +45,6 @@ defmodule Nookal.Document do
   end
 
   def fetch_valid_data(documents) do
-    Enum.filter(documents, &match?(%Nookal.Document{:status => x} when (x != "0"), &1))
+    Enum.filter(documents, &match?(%Nookal.Document{:status => x} when x != "0", &1))
   end
 end

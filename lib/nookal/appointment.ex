@@ -18,7 +18,8 @@ defmodule Nookal.Appointment do
           cancellation_date: NaiveDateTime.t(),
           notes: String.t(),
           date_created: NaiveDateTime.t(),
-          date_modified: NaiveDateTime.t()
+          date_modified: NaiveDateTime.t(),
+          did_not_arrive: Boolean.t()
         }
 
   defstruct [
@@ -38,7 +39,8 @@ defmodule Nookal.Appointment do
     :cancellation_date,
     :notes,
     :date_created,
-    :date_modified
+    :date_modified,
+    :did_not_arrive
   ]
 
   @mapping [
@@ -58,7 +60,8 @@ defmodule Nookal.Appointment do
     {:cancellation_date, "cancellationDate", :naive_date_time},
     {:notes, "Notes", :string},
     {:date_created, "dateCreated", :naive_date_time},
-    {:date_modified, "lastModified", :naive_date_time}
+    {:date_modified, "lastModified", :naive_date_time},
+    {:did_not_arrive, "DNA", :boolean}
   ]
 
   def new(payload) when is_list(payload) do
@@ -73,7 +76,7 @@ defmodule Nookal.Appointment do
 
   def fetch_valid_data(treatment_notes) do
     treatment_notes
-    |> Enum.filter(&match?(%Nookal.Appointment{:cancelled? => x} when (x == false), &1))
-    |> Enum.filter(&match?(%Nookal.Appointment{:arrived? => x} when (x == false or x == nil), &1))
+    |> Enum.filter(&match?(%Nookal.Appointment{:cancelled? => x} when x == false, &1))
+    |> Enum.filter(&match?(%Nookal.Appointment{:arrived? => x} when x == false or x == nil, &1))
   end
 end

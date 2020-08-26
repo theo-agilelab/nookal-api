@@ -233,8 +233,8 @@ defmodule Nookal do
 
   def search_patient(params \\ %{}) do
     with {:ok, payload} <- @client.dispatch("/searchPatients", params),
-      {:ok, raw_patient} <- fetch_results(payload, "patients"),
-      {:ok, patient} <- Nookal.Patient.new(raw_patient) do
+         {:ok, raw_patient} <- fetch_results(payload, "patients"),
+         {:ok, patient} <- Nookal.Patient.new(raw_patient) do
       {:ok, List.first(patient)}
     end
   end
@@ -243,14 +243,12 @@ defmodule Nookal do
 
   def search_patients(params \\ %{}) do
     with {:ok, payload} <- @client.dispatch("/searchPatients", params),
-      {:ok, raw_patients} <- fetch_results(payload, "patients"),
-      {:ok, page} <- Nookal.Page.new(payload),
-      {:ok, patients} <- Nookal.Patient.new(raw_patients) do
-        {:ok, Nookal.Page.put_items(page, patients)}
+         {:ok, raw_patients} <- fetch_results(payload, "patients"),
+         {:ok, page} <- Nookal.Page.new(payload),
+         {:ok, patients} <- Nookal.Patient.new(raw_patients) do
+      {:ok, Nookal.Page.put_items(page, patients)}
     end
   end
-
-  
 
   @doc """
   Get appointments in a page.
@@ -280,14 +278,14 @@ defmodule Nookal do
           practitioner_id: 1,
           start_time: nil,
           type: "Consultation",
-          type_id: 1
+          type_id: 1,
+          do_not_arrived: false
         }
       ],
       next: 2
     }
       
   """
-
   @spec get_appointments(map()) :: {:ok, Nookal.Page.t(Nookal.Appointment.t())} | {:error, term()}
 
   def get_appointments(params \\ %{}) do
@@ -434,12 +432,11 @@ defmodule Nookal do
     }
   """
 
-  @spec add_treatment_note(map()) ::
-          {:ok, String.t()} | {:error, term()}
+  @spec add_treatment_note(map()) :: {:ok, String.t()} | {:error, term()}
 
   def add_treatment_note(params) do
     with {:ok, payload} <- @client.dispatch("/addTreatmentNote", params),
-      {:ok, note_id} <- fetch_results(payload, "note_id") do
+         {:ok, note_id} <- fetch_results(payload, "note_id") do
       {:ok, note_id}
     else
       {:error, _reason} -> :error
