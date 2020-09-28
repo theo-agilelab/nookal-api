@@ -29,7 +29,7 @@ defmodule Nookal.MixProject do
   defp deps() do
     [
       {:castore, "~> 0.1.0"},
-      {:mint, "~> 0.4.0"},
+      {:mint, "~> 1.1"},
       {:connection, "~> 1.0.4"},
       {:jason, "~> 1.1"},
       {:poolboy, "~> 1.5"},
